@@ -6,8 +6,8 @@ admin.initializeApp();
 const db = admin.firestore();
 
 // Телеграм настройки
-const TELEGRAM_BOT_TOKEN = "8644755123:AAFgRnQhDiisTYVytPALG6u9b5bTkWiDDx8";
-const TELEGRAM_CHAT_IDS = ["1240608029", "1872767454"];
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "YOUR_TELEGRAM_BOT_TOKEN";
+const TELEGRAM_CHAT_IDS = (process.env.TELEGRAM_CHAT_IDS || "YOUR_CHAT_ID_1,YOUR_CHAT_ID_2").split(",");
 
 // Ключ для Cloudflare Turnstile
 const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY || "SET_YOUR_SECRET_KEY_HERE";

@@ -180,7 +180,7 @@
                 <!-- БЛОК CLOUDFLARE TURNSTILE -->
                 <div class="calc-group" style="display: flex; justify-content: center; margin-top: 15px;">
                     <!-- ВАЖНО: Замени data-sitekey на свой ключ после регистрации в Cloudflare -->
-                    <div class="cf-turnstile" data-sitekey="0x4AAAAAADIx_m3M18ohKOfF" data-callback="turnstileCallback" data-expired-callback="turnstileExpired" data-error-callback="turnstileError" data-refresh-expired="auto"></div>
+                    <div class="cf-turnstile" data-sitekey="YOUR_CLOUDFLARE_TURNSTILE_SITE_KEY" data-callback="turnstileCallback" data-expired-callback="turnstileExpired" data-error-callback="turnstileError" data-refresh-expired="auto"></div>
                 </div>
 
                 <button id="bookBtn" class="btn-primary" style="width: 100%; margin-top: 20px; font-size: 1.1rem; border:none; cursor:pointer;" data-key="btnBook">Отправить заявку</button>
@@ -684,19 +684,21 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
       import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+      // Replace these values with your actual Firebase project configuration
       const firebaseConfig = {
-            apiKey: "AIzaSyCXTsbutO6ja1Glc3F_0BDfbSpsbfqHqqo",
-            authDomain: "ochok-resort.firebaseapp.com",
-            projectId: "ochok-resort",
-            storageBucket: "ochok-resort.firebasestorage.app",
-            messagingSenderId: "822521790563",
-            appId: "1:822521790563:web:f2fa3605214684312f7856"
+            apiKey: "YOUR_FIREBASE_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
       };
 
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
 
-      const FUNCTION_URL = "https://us-central1-ochok-resort.cloudfunctions.net/createBooking";
+      // Replace with your Cloud Function URL
+      const FUNCTION_URL = "https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/createBooking";
 
       window.saveBookingToFirebase = async function(bookingData, turnstileToken) {
           const response = await fetch(FUNCTION_URL, {
