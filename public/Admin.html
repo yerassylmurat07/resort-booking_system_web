@@ -140,13 +140,14 @@
         import { getFirestore, collection, getDocs, doc, deleteDoc, addDoc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 
+        // Replace these values with your actual Firebase project configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyCXTsbutO6ja1Glc3F_0BDfbSpsbfqHqqo",
-            authDomain: "ochok-resort.firebaseapp.com",
-            projectId: "ochok-resort",
-            storageBucket: "ochok-resort.firebasestorage.app",
-            messagingSenderId: "822521790563",
-            appId: "1:822521790563:web:f2fa3605214684312f7856"
+            apiKey: "YOUR_FIREBASE_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
         const app = initializeApp(firebaseConfig);
