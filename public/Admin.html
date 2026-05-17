@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель «Очок» v2.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Admin.css">
+    <link rel="icon" type="image/webp" href="/favicon.webp">
+</head>
+<body>
+
+    <div id="login-screen">
+        <h2>Вход в панель Очок</h2>
+        <div id="login-error">Неверный логин или пароль</div>
+        <input type="email" id="email" class="login-input" placeholder="Email администратора">
+        <input type="password" id="password" class="login-input" placeholder="Пароль">
+        <button id="btn-login" class="btn-primary" style="width: 100%;">Войти</button>
+    </div>
+
+    <div id="admin-dashboard" style="display: none;">
+        <div class="admin-container">
+            <div class="header-flex">
+                <h1 style="margin:0;">Панель управления</h1>
+                <button id="btn-logout" class="btn-logout">Выйти</button>
+            </div>
+
+            <!-- Аналитика -->
+            <div class="analytics-grid">
+                <div class="stat-card">
+                    <h4>Всего броней (Активных)</h4>
+                    <p class="value" id="stat-bookings">0</p>
+                </div>
+                <div class="stat-card stat-green">
+                    <h4>Оплачено (СОМ)</h4>
+                    <p class="value" id="stat-som">0</p>
+                </div>
+                <div class="stat-card stat-green">
+                    <h4>Оплачено (USD)</h4>
+                    <p class="value" id="stat-usd">0</p>
+                </div>
+            </div>
+
+            <!-- Настройки сайта -->
+            <div class="panel-box" style="border-left: 5px solid #27ae60; background: #fcfefe;">
+                <h2 style="color: #27ae60;">Настройки сайта (Цены и Функции)</h2>
+                <div class="form-grid">
+                    <div class="form-group"><label>Цена за домик (СОМ)</label><input type="number" id="setting-som" placeholder="13100"></div>
+                    <div class="form-group"><label>Цена за домик (USD)</label><input type="number" id="setting-usd" placeholder="150"></div>
+                </div>
+                <div class="form-grid" style="margin-top: 10px; grid-template-columns: 1fr;">
+                    <label style="display:flex; align-items:center; cursor:pointer; font-weight:600;">
+                        <input type="checkbox" id="setting-breakfast" style="width: 20px; height: 20px; margin-right: 10px;"> Показывать гостям выбор завтрака
+                    </label>
+                    <label style="display:flex; align-items:center; cursor:pointer; font-weight:600; margin-top:5px;">
+                        <input type="checkbox" id="setting-booking" style="width: 20px; height: 20px; margin-right: 10px;" checked> Принимать бронирования с сайта
+                    </label>
+                </div>
+                <div class="form-group" id="reason-group" style="margin-top: 15px; display: none;">
+                    <label style="color: #e74c3c;">Своя причина (оставьте пустым для автоперевода)</label>
+                    <input type="text" id="setting-reason" placeholder="Например: Извините, закрыто до 1 июня">
+                </div>
+                <button id="btn-save-prices" class="btn-primary" style="background: #27ae60; width: 100%; margin-top: 15px;">Сохранить настройки</button>
+            </div>
+            
+            <!-- Ручное добавление и блокировка -->
+            <div class="panel-box" style="border-left: 5px solid var(--brand-gold);">
+                <h2>Добавить бронь / Закрыть на ремонт</h2>
+                <div class="form-grid">
+                    <div class="form-group" style="grid-column: 1 / -1; margin-bottom: 5px;">
+                        <label style="display:flex; align-items:center; cursor:pointer; color:#e74c3c; font-weight:bold;">
+                            <input type="checkbox" id="m-maintenance" style="width: 20px; height: 20px; margin-right: 10px;"> 🛠 ЗАБЛОКИРОВАТЬ НА РЕМОНТ / УБОРКУ
+                        </label>
+                    </div>
+                    <div class="form-group"><label>Домик №</label><select id="m-cabin"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></div>
+                    <div class="form-group"><label>Заезд</label><input type="date" id="m-in"></div>
+                    <div class="form-group"><label>Выезд</label><input type="date" id="m-out"></div>
+                    <div class="form-group"><label>Имя гостя</label><input type="text" id="m-name" placeholder="Имя"></div>
+                    <div class="form-group"><label>Телефон</label><input type="tel" id="m-phone" placeholder="Номер"></div>
+                    <div class="form-group"><label>Сумма</label><input type="number" id="m-total" placeholder="0"></div>
+                    <div class="form-group"><label>Валюта</label><select id="m-currency"><option value="SOM">Сомы</option><option value="USD">Доллары</option></select></div>
+                </div>
+                <button id="btn-manual-add" class="btn-primary" style="width: 100%;">Сохранить в базу</button>
+            </div>
+
+            <!-- Таблица и фильтры -->
+            <div class="panel-box">
+                <div class="header-flex">
+                    <h2 style="margin: 0;">Список бронирований</h2>
+                    <button id="btn-export" class="btn-excel">📥 Скачать Excel</button>
+                </div>
+                
+                <div class="filter-bar">
+                    <input type="text" id="search-input" placeholder="🔍 Поиск по имени или телефону...">
+                    <select id="filter-status">
+                        <option value="all">👁 Все статусы</option>
+                        <option value="pending">🟡 Ожидают оплату</option>
+                        <option value="paid">🟢 Оплачено</option>
+                        <option value="completed">🔘 Завершено</option>
+                        <option value="maintenance">🛠 Ремонт</option>
+                    </select>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr><th>Домик</th><th>Даты (Заезд - Выезд)</th><th>Гость & Заметки</th><th>Сумма & Статус</th><th>Действия</th></tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+                <div id="loading">Загрузка данных...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования -->
+    <div id="edit-modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color:var(--brand-blue);">Редактирование брони</h3>
+            <div class="form-group" style="margin-bottom:15px;">
+                <label>Статус</label>
+                <select id="edit-status">
+                    <option value="pending">🟡 Ожидает оплату</option>
+                    <option value="paid">🟢 Оплачено (Подтверждено)</option>
+                    <option value="completed">🔘 Завершено (Выехали)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Заметки администратора (видите только вы)</label>
+                <textarea id="edit-notes" placeholder="Например: Обещали оплатить остаток наличными..."></textarea>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button id="btn-save-edit" class="btn-primary" style="flex:1;">Сохранить</button>
+                <button id="btn-close-modal" class="btn-logout" style="flex:1;">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, deleteDoc, addDoc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCXTsbutO6ja1Glc3F_0BDfbSpsbfqHqqo",
+            authDomain: "ochok-resort.firebaseapp.com",
+            projectId: "ochok-resort",
+            storageBucket: "ochok-resort.firebasestorage.app",
+            messagingSenderId: "822521790563",
+            appId: "1:822521790563:web:f2fa3605214684312f7856"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let allBookingsList = []; 
+        let currentEditId = null;
+
+        // Защита от XSS: экранирование HTML в данных из БД
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = String(str);
+            return div.innerHTML;
+        }
+
+        // Авторизация
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-dashboard').style.display = 'block';
+                loadBookings();
+                loadPrices(); 
+            } else {
+                document.getElementById('login-screen').style.display = 'block';
+                document.getElementById('admin-dashboard').style.display = 'none';
+            }
+        });
+
+        document.getElementById('btn-login').addEventListener('click', () => {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('btn-login').innerText = "Проверка...";
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => { document.getElementById('btn-login').innerText = "Войти"; })
+                .catch((error) => {
+                    document.getElementById('login-error').innerText = "Ошибка: Неверный логин/пароль";
+                    document.getElementById('login-error').style.display = 'block';
+                    document.getElementById('btn-login').innerText = "Войти";
+                });
+        });
+
+        document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
+
+        // Настройки сайта
+        document.getElementById('setting-booking').addEventListener('change', function() {
+            document.getElementById('reason-group').style.display = this.checked ? 'none' : 'block';
+        });
+
+        async function loadPrices() {
+            try {
+                const docSnap = await getDoc(doc(db, "settings", "prices"));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('setting-som').value = data.som || 13100;
+                    document.getElementById('setting-usd').value = data.usd || 150;
+                    document.getElementById('setting-breakfast').checked = data.breakfast !== false;
+                    const isBookingEnabled = data.booking !== false;
+                    document.getElementById('setting-booking').checked = isBookingEnabled;
+                    document.getElementById('setting-reason').value = data.reason || "";
+                    document.getElementById('reason-group').style.display = isBookingEnabled ? 'none' : 'block';
+                }
+            } catch (error) { console.error("Ошибка загрузки цен"); }
+        }
+
+        document.getElementById('btn-save-prices').addEventListener('click', async function() {
+            const somVal = parseInt(document.getElementById('setting-som').value);
+            const usdVal = parseInt(document.getElementById('setting-usd').value);
+            if (!somVal || !usdVal) { alert("Введите обе цены!"); return; }
+            this.innerText = "Сохранение...";
+            try {
+                await setDoc(doc(db, "settings", "prices"), { 
+                    som: somVal, usd: usdVal,
+                    breakfast: document.getElementById('setting-breakfast').checked,
+                    booking: document.getElementById('setting-booking').checked,
+                    reason: document.getElementById('setting-reason').value
+                });
+                alert("Настройки успешно обновлены!");
+            } catch (error) { alert("Ошибка при сохранении."); }
+            this.innerText = "Сохранить настройки";
+        });
+
+        // Блокировка на ремонт
+        document.getElementById('m-maintenance').addEventListener('change', function() {
+            const isMaint = this.checked;
+            document.getElementById('m-name').disabled = isMaint;
+            document.getElementById('m-phone').disabled = isMaint;
+            document.getElementById('m-total').disabled = isMaint;
+            document.getElementById('m-name').value = isMaint ? "[РЕМОНТ]" : "";
+            document.getElementById('m-phone').value = isMaint ? "-" : "";
+            document.getElementById('m-total').value = isMaint ? "0" : "";
+        });
+
+        // Даты
+        document.getElementById('m-in').addEventListener('change', function() {
+            const outInput = document.getElementById('m-out');
+            let nextDay = new Date(this.value);
+            nextDay.setDate(nextDay.getDate() + 1);
+            let nextDayString = nextDay.toISOString().split('T')[0];
+            outInput.min = nextDayString; 
+            if (!outInput.value || outInput.value <= this.value) { outInput.value = nextDayString; }
+        });
+
+        // Добавление брони/ремонта
+        document.getElementById('btn-manual-add').addEventListener('click', async function() {
+            const cabin = document.getElementById('m-cabin').value;
+            const checkIn = document.getElementById('m-in').value;
+            const checkOut = document.getElementById('m-out').value;
+            const name = document.getElementById('m-name').value || "Гость";
+            const phone = document.getElementById('m-phone').value || "-";
+            const total = document.getElementById('m-total').value || 0;
+            const currency = document.getElementById('m-currency').value;
+            const isMaint = document.getElementById('m-maintenance').checked;
+
+            if (!checkIn || !checkOut) { alert("Выберите даты!"); return; }
+            const nights = Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
+
+            const selectedIn = new Date(checkIn);
+            const selectedOut = new Date(checkOut);
+            let isOccupied = false;
+
+            allBookingsList.forEach(booking => {
+                if (booking.cabinNumber == cabin) {
+                    const bIn = new Date(booking.checkIn);
+                    const bOut = new Date(booking.checkOut);
+                    if (selectedIn < bOut && selectedOut > bIn) { isOccupied = true; }
+                }
+            });
+
+            if (isOccupied) { alert(`Домик №${cabin} УЖЕ ЗАНЯТ на эти даты!`); return; }
+
+            this.disabled = true; this.innerText = "Сохранение...";
+            try {
+                const bookingRef = await addDoc(collection(db, "bookings"), {
+                    cabinNumber: parseInt(cabin), checkIn: checkIn, checkOut: checkOut,
+                    name: isMaint ? "[РЕМОНТ]" : "👑 " + name, phone: phone, total: parseInt(total),
+                    currency: currency, nights: nights, 
+                    status: isMaint ? "maintenance" : "pending", 
+                    createdAt: new Date().toISOString(), notes: ""
+                });
+                
+                // Дублируем в публичную таблицу для календаря
+                await setDoc(doc(db, "public_availability", bookingRef.id), {
+                    cabinNumber: parseInt(cabin), checkIn: checkIn, checkOut: checkOut
+                });
+
+                alert("Успешно добавлено!");
+                document.getElementById('m-in').value = ''; document.getElementById('m-out').value = ''; 
+                document.getElementById('m-maintenance').checked = false;
+                document.getElementById('m-name').disabled = false; document.getElementById('m-name').value = '';
+                document.getElementById('m-phone').disabled = false; document.getElementById('m-phone').value = '';
+                document.getElementById('m-total').disabled = false; document.getElementById('m-total').value = '';
+                loadBookings();
+            } catch (e) { alert("Ошибка сохранения."); } finally { this.disabled = false; this.innerText = "Сохранить в базу"; }
+        });
+
+        // Загрузка и Рендер таблицы
+        async function loadBookings() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('table-body').innerHTML = '';
+            try {
+                const querySnapshot = await getDocs(collection(db, "bookings"));
+                let bookings = [];
+                querySnapshot.forEach((doc) => { bookings.push({ id: doc.id, ...doc.data() }); });
+                allBookingsList = bookings.sort((a, b) => new Date(a.checkIn) - new Date(b.checkIn));
+                renderTable();
+            } catch (error) { document.getElementById('loading').innerText = "Ошибка загрузки."; }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('filter-status').value;
+
+            let countAll = 0, sumSom = 0, sumUsd = 0;
+
+            allBookingsList.forEach(b => {
+                let st = b.status || 'pending';
+                if(st === 'booked' || st === 'manual_booking') st = 'pending'; // Поддержка старых записей
+                
+                // Аналитика (считаем только реальные брони)
+                if (st !== 'maintenance') countAll++;
+                if (st === 'paid' || st === 'completed') {
+                    if(b.currency === 'USD') sumUsd += Number(b.total);
+                    else sumSom += Number(b.total);
+                }
+
+                // Фильтры
+                const matchSearch = b.name.toLowerCase().includes(searchTerm) || b.phone.includes(searchTerm);
+                const matchStatus = statusFilter === 'all' || st === statusFilter;
+
+                if (matchSearch && matchStatus) {
+                    let badgeHtml = '';
+                    if(st === 'maintenance') badgeHtml = '<span class="status-badge" style="background:#95a5a6;">🛠 Ремонт</span>';
+                    else if(st === 'paid') badgeHtml = '<span class="status-badge" style="background:#27ae60;">🟢 Оплачено</span>';
+                    else if(st === 'completed') badgeHtml = '<span class="status-badge" style="background:#7f8c8d;">🔘 Завершено</span>';
+                    else badgeHtml = '<span class="status-badge" style="background:#f39c12;">🟡 Ожидает</span>';
+
+                    let notesHtml = b.notes ? `<div style="font-size:0.8rem; color:#7f8c8d; margin-top:5px;">💬 ${escapeHtml(b.notes)}</div>` : '';
+                    let safeName = escapeHtml(b.name);
+                    let safePhone = escapeHtml(b.phone);
+                    let phoneDigits = b.phone ? b.phone.replace(/\D/g,'') : '';
+                    let contactHtml = st === 'maintenance' ? '-' : `<a href="tel:${phoneDigits}" style="color:var(--brand-blue); text-decoration:none; font-weight:bold;">${safePhone}</a><br><a href="https://wa.me/${phoneDigits}" target="_blank" style="font-size:0.8rem; color:#25D366;">Написать в WA</a>`;
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td data-label="Домик"><span class="badge">№${parseInt(b.cabinNumber)}</span></td>
+                        <td data-label="Даты"><b>${escapeHtml(b.checkIn)}</b> <br><span style="font-size:0.8rem; color:#777;">по ${escapeHtml(b.checkOut)}</span></td>
+                        <td data-label="Гость"><b>${safeName}</b> ${notesHtml}</td>
+                        <td data-label="Сумма">${parseInt(b.total).toLocaleString()} ${b.currency === 'USD' ? '$' : 'сом'} <br>${badgeHtml}</td>
+                        <td data-label="Действия">
+                            <div class="action-btns">
+                                ${st !== 'maintenance' ? `<button class="btn-icon btn-edit" onclick="window.openEdit('${escapeHtml(b.id)}')" title="Редактировать">✏️</button>` : ''}
+                                <button class="btn-icon btn-delete" onclick="window.deleteBooking('${escapeHtml(b.id)}')" title="Удалить навсегда">❌</button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+
+            // Обновляем аналитику
+            document.getElementById('stat-bookings').innerText = countAll;
+            document.getElementById('stat-som').innerText = sumSom.toLocaleString();
+            document.getElementById('stat-usd').innerText = sumUsd.toLocaleString();
+            document.getElementById('loading').style.display = 'none';
+            if(tbody.innerHTML === '') tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">Ничего не найдено</td></tr>';
+        }
+
+        // Поиск и фильтр события
+        document.getElementById('search-input').addEventListener('input', renderTable);
+        document.getElementById('filter-status').addEventListener('change', renderTable);
+
+        // Глобальные функции для кнопок в таблице
+        window.openEdit = function(id) {
+            currentEditId = id;
+            const b = allBookingsList.find(x => x.id === id);
+            let st = b.status || 'pending';
+            if(st === 'booked' || st === 'manual_booking') st = 'pending';
+            
+            document.getElementById('edit-status').value = st;
+            document.getElementById('edit-notes').value = b.notes || '';
+            document.getElementById('edit-modal').style.display = 'flex';
+        };
+
+        window.deleteBooking = async function(id) {
+            if (confirm("Внимание! Вы собираетесь навсегда удалить эту запись. Домик снова станет доступен на сайте. Продолжить?")) {
+                await deleteDoc(doc(db, "bookings", id));
+                await deleteDoc(doc(db, "public_availability", id));
+                loadBookings();
+            }
+        };
+
+        // Сохранение изменений в модалке
+        document.getElementById('btn-close-modal').addEventListener('click', () => document.getElementById('edit-modal').style.display = 'none');
+        
+        document.getElementById('btn-save-edit').addEventListener('click', async function() {
+            this.innerText = "Сохранение...";
+            const newStatus = document.getElementById('edit-status').value;
+            const newNotes = document.getElementById('edit-notes').value;
+            try {
+                await updateDoc(doc(db, "bookings", currentEditId), { status: newStatus, notes: newNotes });
+                
+                // Если статус стал "maintenance" или "paid" - убеждаемся что есть в анонимной базе
+                // Если запись удалена или отменена (в будущем), можно убирать оттуда.
+                // Пока просто обновляем/создаем анонимную запись для календаря.
+                const b = allBookingsList.find(x => x.id === currentEditId);
+                await setDoc(doc(db, "public_availability", currentEditId), {
+                    cabinNumber: b.cabinNumber, checkIn: b.checkIn, checkOut: b.checkOut
+                });
+
+                document.getElementById('edit-modal').style.display = 'none';
+                loadBookings();
+            } catch(e) { alert("Ошибка при обновлении"); }
+            this.innerText = "Сохранить";
+        });
+
+        // Скачать Excel (Оставляет только то, что отфильтровано)
+        document.getElementById('btn-export').addEventListener('click', function() {
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFFДомик,Заезд,Выезд,Имя,Телефон,Сумма,Валюта,Статус,Заметки\n";
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('filter-status').value;
+
+            allBookingsList.forEach(b => {
+                let st = b.status || 'pending';
+                if (b.name.toLowerCase().includes(searchTerm) || b.phone.includes(searchTerm)) {
+                    if (statusFilter === 'all' || st === statusFilter) {
+                        let safeNotes = b.notes ? b.notes.replace(/"/g, '""').replace(/\n/g, ' ') : '';
+                        csvContent += `"${b.cabinNumber}","${b.checkIn}","${b.checkOut}","${b.name}","${b.phone}","${b.total}","${b.currency}","${st}","${safeNotes}"\n`;
+                    }
+                }
+            });
+            const link = document.createElement("a");
+            link.href = encodeURI(csvContent);
+            link.download = "ochok_bookings.csv";
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        });
+    </script>
+</body>
+</html>

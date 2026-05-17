@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Теперь только пользователи с custom claim admin == true
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Настройки сайта: читают все, пишут только админы
+    match /settings/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Бронирования: только админы (создание идет через Cloud Functions / Admin SDK)
+    match /bookings/{bookingId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Публичная доступность: читают все (для календаря), пишут только админы (сервер)
+    match /public_availability/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Зона отдыха «Очок» | Каджи-Сай</title>
+    <link rel="stylesheet" href="style.css?v=9">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/webp" href="/favicon.webp">
+    
+    <!-- Скрипт Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="container top-bar-content">
+            <div class="languages">
+                <a href="#" class="lang-btn active" onclick="changeLanguage('ru', event)">РУС</a> | 
+                <a href="#" class="lang-btn" onclick="changeLanguage('en', event)">ENG</a> | 
+                <a href="#" class="lang-btn" onclick="changeLanguage('kg', event)">КЫР</a>
+            </div>
+            <div class="top-contacts">
+                <!-- Измененная ссылка для шапки -->
+                <a href="#" onclick="openMapModal(event)" style="color: inherit; text-decoration: none;" title="Открыть карту">
+                    <span data-key="topLocation">📍 Каджи-Сай, Иссык-Куль</span>
+                </a>
+                <a href="#calculator" class="btn-small" data-key="topCalcBtn" style="margin-left: 15px;">Бронирование</a>
+            </div>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <div class="container nav-wrapper">
+            <div class="logo">
+                <span class="logo-title">ОЧОК</span>
+                <span class="logo-subtitle" data-key="logoSub">А-ФРЕЙМ ДОМИКИ НА БЕРЕГУ</span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#about" data-key="navAbout">О нас</a></li>
+                    <li><a href="#accommodation" data-key="navRoom">Проживание</a></li>
+                    <li><a href="#calculator" data-key="navCalc">Бронь</a></li>
+                    <li><a href="#contacts" data-key="navContact">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-text">
+                <h1 data-key="heroTitle">Уютные А-фрейм домики<br>на самом берегу</h1>
+                <p data-key="heroSubtitle">Тихий отдых в Каджи-Сае. Жемчужина южного берега.</p>
+            </div>
+        </section>
+
+        <section id="about" class="intro container">
+            <h2 data-key="aboutTitle">Добро пожаловать в «Очок»</h2>
+            <p data-key="aboutText">Наша зона отдыха состоит из 8 современных домиков в стиле A-Frame. Мы находимся прямо на береговой линии Иссык-Куля.</p>
+        </section>
+
+        <section id="accommodation" class="bg-light">
+            <div class="container">
+                <h2 class="section-title" data-key="roomSectionTitle">Ваше жилье</h2>
+                
+                <div class="single-room-showcase">
+                    <div class="slider-container">
+                        <div class="slider-wrapper">
+                            <img src="IMG_4371.webp" class="slide active" alt="Вид с террасы">
+                            <img src="IMG_4372.webp" class="slide" alt="Домики снаружи">
+                            <img src="IMG_4373.webp" class="slide" alt="Вид на озеро">
+                            <img src="IMG_4374.webp" class="slide" alt="Обеденный стол">
+                            <img src="IMG_4375.webp" class="slide" alt="Лестница и кровать">
+                            <img src="IMG_4376.webp" class="slide" alt="Кухня">
+                            <img src="IMG_4377.webp" class="slide" alt="Ванная">
+                        </div>
+                        <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+                        <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
+                    </div>
+
+                    <div class="room-details">
+                        <h3 data-key="roomTitle">Комфортабельный А-Фрейм</h3>
+                        <div class="room-features">
+                            <span data-key="featCap">👤 4-6 мест</span>
+                            <span data-key="featBeach">🌊 Прямо на берегу</span>
+                            <span data-key="featEco">🌲 Эко-материалы</span>
+                        </div>
+                        <p class="description" data-key="roomDesc">
+                            Просторный двухэтажный домик с панорамными окнами. Внутри есть всё необходимое для комфортного проживания семьи или компании друзей. 
+                        </p>
+                        <div class="pricing-box">
+                            <div class="price-item">
+                                <span class="label" data-key="priceLabel">Цена за домик:</span>
+                                <span class="value" id="display-price">Загрузка...</span>
+                            </div>
+                        </div>
+                        <div class="nearby-info">
+                            <strong data-key="nearbyStrong">Рядом:</strong> <span data-key="nearbyText">В шаговой доступности находятся уютные кафе с национальной и европейской кухней.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="calculator" class="container text-center bg-white" style="padding: 60px 0;">
+            <h2 data-key="calcTitle">Бронирование и расчет</h2>
+            <p data-key="calcSub">Выберите даты, чтобы узнать итоговую сумму и отправить заявку.</p>
+            
+            <div class="calculator-box">
+                <div class="calc-row" style="margin-bottom: 20px;">
+                    <div class="calc-group" style="flex: 1; margin-right: 10px;">
+                        <label for="checkIn" data-key="formIn">Заезд:</label>
+                        <input type="date" id="checkIn">
+                    </div>
+                    <div class="calc-group" style="flex: 1;">
+                        <label for="checkOut" data-key="formOut">Выезд:</label>
+                        <input type="date" id="checkOut">
+                    </div>
+                </div>
+
+                <div class="cabin-map-container">
+                    <div class="lake-header" data-key="lakePath">🌊 ОЗЕРО ⬆</div>
+                    <div class="cabin-map">
+                        <div class="cabin-column">
+                            <div class="cabin-item" id="cabin-1" onclick="selectCabin(1)">№1</div>
+                            <div class="cabin-item" id="cabin-3" onclick="selectCabin(3)">№3</div>
+                            <div class="cabin-item" id="cabin-5" onclick="selectCabin(5)">№5</div>
+                            <div class="cabin-item" id="cabin-7" onclick="selectCabin(7)">№7</div>
+                        </div>
+                        
+                        <div class="cabin-path"></div>
+
+                        <div class="cabin-column">
+                            <div class="cabin-item" id="cabin-2" onclick="selectCabin(2)">№2</div>
+                            <div class="cabin-item" id="cabin-4" onclick="selectCabin(4)">№4</div>
+                            <div class="cabin-item" id="cabin-6" onclick="selectCabin(6)">№6</div>
+                            <div class="cabin-item disabled" id="cabin-8" title="Домик для персонала (недоступен для брони)">№8 🔒</div>
+                        </div>
+                    </div>
+                    <p id="selected-cabin-text" data-key="noCabinSelected">Сначала выберите даты заезда</p>
+                </div>
+
+                <div class="calc-group">
+                    <label for="guestName" data-key="formName">Ваше имя:</label>
+                    <input type="text" id="guestName" placeholder="Азамат">
+                </div>
+                <div class="calc-group">
+                    <label for="guestPhone" data-key="formPhone">Номер телефона:</label>
+                    <input type="tel" id="guestPhone" placeholder="+996 555 123 456">
+                </div>
+                
+                <div class="calc-group">
+                    <label for="currency" data-key="calcCurr">Валюта для расчета:</label>
+                    <select id="currency">
+                        <option value="som" data-key="optSom">Сомы (KGS)</option>
+                        <option value="usd" data-key="optUsd">Доллары (USD)</option>
+                    </select>
+                </div>
+
+                <div class="calc-group" style="background: #f0f4f7; padding: 15px; border-radius: 6px; border: 1px solid #d1d9e0;">
+                    <label id="breakfast-container" style="display: flex; align-items: center; cursor: pointer; margin-bottom: 12px; font-weight: 600; color: var(--brand-blue); text-align: left;">
+                        <input type="checkbox" id="extra-breakfast" checked style="width: 20px; height: 20px; margin-right: 12px; cursor: pointer; flex-shrink: 0;">
+                        <span data-key="optBreakfast">Завтрак включен (убрать: -850 сом / -10$)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; cursor: pointer; font-weight: 600; color: var(--brand-blue); text-align: left;">
+                        <input type="checkbox" id="extra-late-checkout" style="width: 20px; height: 20px; margin-right: 12px; cursor: pointer; flex-shrink: 0;">
+                        <span data-key="optLate">Поздний выезд +2 часа (+850 сом / +10$)</span>
+                    </label>
+                </div>
+                
+                <div class="calc-total">
+                    <p><span data-key="calcTotalText">Итого за</span> <span id="nights-count">0</span> <span data-key="calcNightsText">ночей:</span></p>
+                    <p style="margin-top: 5px;">
+                        <span id="total-price" style="font-size: 2.5rem; font-weight: bold; color: var(--brand-blue);">0</span> 
+                        <span id="currency-symbol" style="font-size: 2.5rem; font-weight: bold; color: var(--brand-blue);">сом</span>
+                    </p>
+                </div>
+
+                <!-- БЛОК CLOUDFLARE TURNSTILE -->
+                <div class="calc-group" style="display: flex; justify-content: center; margin-top: 15px;">
+                    <!-- ВАЖНО: Замени data-sitekey на свой ключ после регистрации в Cloudflare -->
+                    <div class="cf-turnstile" data-sitekey="0x4AAAAAADIx_m3M18ohKOfF" data-callback="turnstileCallback" data-expired-callback="turnstileExpired" data-error-callback="turnstileError" data-refresh-expired="auto"></div>
+                </div>
+
+                <button id="bookBtn" class="btn-primary" style="width: 100%; margin-top: 20px; font-size: 1.1rem; border:none; cursor:pointer;" data-key="btnBook">Отправить заявку</button>
+            </div>
+        </section>
+
+        <section class="faq-section bg-light" style="padding: 40px 0 80px;">
+            <div class="container">
+                <h2 class="section-title" data-key="faqTitle" style="margin-bottom: 30px;">Важная информация</h2>
+                <div class="accordion" style="max-width: 800px; margin: 0 auto; text-align: left;">
+                    <div class="accordion-item" style="border-bottom: 1px solid #ddd;">
+                        <button class="accordion-header" onclick="toggleAccordion(this)" style="width: 100%; padding: 20px; background: none; border: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 1.1rem; color: var(--brand-blue); font-weight: 700; transition: 0.3s;">
+                            <span data-key="q1">Время заезда и выезда</span>
+                            <span class="icon-plus">+</span>
+                        </button>
+                        <div class="accordion-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;">
+                            <p data-key="a1" style="padding: 0 20px 20px; font-size: 0.95rem; color: #555;">Заезд возможен в любое удобное для вас время с 14:00. Выезд осуществляется до 12:00 дня.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item" style="border-bottom: 1px solid #ddd;">
+                        <button class="accordion-header" onclick="toggleAccordion(this)" style="width: 100%; padding: 20px; background: none; border: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 1.1rem; color: var(--brand-blue); font-weight: 700; transition: 0.3s;">
+                            <span data-key="q2">Условия оплаты</span>
+                            <span class="icon-plus">+</span>
+                        </button>
+                        <div class="accordion-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;">
+                            <p data-key="a2" style="padding: 0 20px 20px; font-size: 0.95rem; color: #555;">Бронирование осуществляется по предоплате в размере 20%. Оставшаяся часть оплаты производится на месте при заезде.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacts">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h3 data-key="footerTitle1">ЗОНА ОТДЫХА «ОЧОК»</h3>
+                <!-- Измененная ссылка для подвала -->
+                <a href="#" onclick="openMapModal(event)" style="color: inherit; text-decoration: underline;" title="Открыть карту">
+                    <p data-key="footerText1">Кыргызская Республика,<br>Иссык-Кульская область, c. Каджи-Сай</p>
+                </a>
+            </div>
+            <div class="footer-col">
+                <h3 data-key="footerTitle2">КОНТАКТЫ</h3>
+                <p data-key="footerText2" style="line-height: 2;">
+                    📞 <a href="tel:+996553443988" style="color: #fff; text-decoration: none;">+996 553 443 988</a><br>
+                    💬 <a href="https://wa.me/996990352990" target="_blank" style="color: #fff; text-decoration: underline;">Написать в WhatsApp</a>
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p data-key="footerCopy">&copy; 2026 Зона отдыха «Очок». Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- HTML ДЛЯ ВСПЛЫВАЮЩЕГО ОКНА ВЫБОРА КАРТЫ -->
+    <div id="map-modal" class="map-modal-overlay">
+        <div class="map-modal-content">
+            <h3 data-key="mapModalTitle" style="margin-bottom: 20px; color: var(--brand-blue);">Выберите карту</h3>
+            <div style="display: flex; flex-direction: column;">
+                <a href="https://maps.app.goo.gl/exTqXmfbS94bQQXH7?g_st=iw" target="_blank" class="btn-gmaps" onclick="closeMapModal()">🌍 Google Maps</a>
+                <a href="https://2gis.kg/search/42.162319,77.160786" target="_blank" class="btn-2gis" onclick="closeMapModal()">📍 2GIS</a>
+                <button class="btn-cancel" onclick="closeMapModal()" data-key="mapModalCancel">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            'ru': {
+                'topLocation': '📍 Каджи-Сай, Иссык-Куль', 'topCalcBtn': 'Бронирование', 'logoSub': 'А-ФРЕЙМ ДОМИКИ НА БЕРЕГУ',
+                'navAbout': 'О нас', 'navRoom': 'Проживание', 'navCalc': 'Бронь', 'navContact': 'Контакты',
+                'heroTitle': 'Уютные А-фрейм домики<br>на самом берегу', 'heroSubtitle': 'Тихий отдых в Каджи-Сае. Жемчужина южного берега.',
+                'aboutTitle': 'Добро пожаловать в «Очок»', 'aboutText': 'Наша зона отдыха состоит из 8 современных домиков в стиле A-Frame. Мы находимся прямо на береговой линии Иссык-Куля.',
+                'roomSectionTitle': 'Ваше жилье', 'roomTitle': 'Комфортабельный А-Фрейм',
+                'featCap': '👤 4-6 мест', 'featBeach': '🌊 Прямо на берегу', 'featEco': '🌲 Эко-материалы',
+                'roomDesc': 'Просторный двухэтажный домик с панорамными окнами. Внутри есть всё необходимое для комфортного проживания.',
+                'priceLabel': 'Цена за домик:', 'nearbyStrong': 'Рядом:', 'nearbyText': 'Уютные кафе с национальной и европейской кухней.',
+                'calcTitle': 'Бронирование и расчет', 'calcSub': 'Выберите даты, чтобы узнать итоговую сумму и отправить заявку.',
+                'cabinWord': 'Домик', 'lakePath': '🌊 ОЗЕРО ⬆', 'noCabinSelected': 'Домик не выбран',
+                'formName': 'Ваше имя:', 'formPhone': 'Номер телефона:', 'formIn': 'Заезд:', 'formOut': 'Выезд:',
+                'calcCurr': 'Валюта для расчета:', 'optSom': 'Сомы (KGS)', 'optUsd': 'Доллары (USD)',
+                'calcTotalText': 'Итого за', 'calcNightsText': 'ночей:', 'btnBook': 'Забронировать',
+                'faqTitle': 'Важная информация', 'q1': 'Время заезда и выезда', 'a1': 'Заезд возможен в любое время после 14:00. Выезд до 12:00.',
+                'q2': 'Условия оплаты', 'a2': 'Бронирование осуществляется по предоплате в размере 20%. Оставшаяся часть оплаты производится на месте при заезде.',
+                'footerTitle1': 'ЗОНА ОТДЫХА «ОЧОК»', 'footerText1': 'Иссык-Кульская область, с. Каджи-Сай',
+                'footerTitle2': 'КОНТАКТЫ', 'footerCopy': '&copy; 2026 Зона отдыха «Очок». Все права защищены.',
+                'alertCabin': 'Пожалуйста, выберите домик на карте.', 'alertDates': 'Пожалуйста, выберите корректные даты.', 'alertInputs': 'Введите ваше имя и телефон.',
+                'alertSuccess': 'Ваша заявка успешно отправлена! Мы сохранили за вами домик. Свяжитесь с нами в WhatsApp, если у вас есть вопросы.',
+                'alertTaken': 'Извините, этот домик уже занят на выбранные даты.',
+                'optBreakfast': 'Завтрак включен (убрать: -850 сом / -10$)',
+                'optLate': 'Поздний выезд +2 часа (+850 сом / +10$)',
+                'btnClosedDefault': 'Бронирование временно недоступно',
+                'mapModalTitle': 'Выберите карту', 'mapModalCancel': 'Отмена',
+                'alertTurnstile': 'Пожалуйста, пройдите проверку на бота (галочка Cloudflare).'
+            },
+            'en': {
+                'topLocation': '📍 Kadzhi-Say, Issyk-Kul', 'topCalcBtn': 'Booking', 'logoSub': 'A-FRAME CABINS ON THE BEACH',
+                'navAbout': 'About Us', 'navRoom': 'Living', 'navCalc': 'Book', 'navContact': 'Contacts',
+                'heroTitle': 'Cozy A-frame cabins<br>right on the beach', 'heroSubtitle': 'Quiet rest in Kadzhi-Say.',
+                'aboutTitle': 'Welcome to "Ochok"', 'aboutText': 'Our recreation area consists of 8 modern A-Frame cabins on the coastline.',
+                'roomSectionTitle': 'Your Accommodation', 'roomTitle': 'Comfortable A-Frame',
+                'featCap': '👤 4-6 guests', 'featBeach': '🌊 Beachfront', 'featEco': '🌲 Eco-materials',
+                'roomDesc': 'Spacious two-story cabin with panoramic windows.', 'priceLabel': 'Price:',
+                'nearbyStrong': 'Nearby:', 'nearbyText': 'Cozy cafes with national cuisine.',
+                'calcTitle': 'Booking & Calculator', 'calcSub': 'Select dates to see the total amount.',
+                'cabinWord': 'Cabin', 'lakePath': '🌊 LAKE ⬆', 'noCabinSelected': 'No cabin selected',
+                'formName': 'Your Name:', 'formPhone': 'Phone Number:', 'formIn': 'Check-in:', 'formOut': 'Check-out:',
+                'calcCurr': 'Currency:', 'optSom': 'Soms (KGS)', 'optUsd': 'Dollars (USD)',
+                'calcTotalText': 'Total for', 'calcNightsText': 'nights:', 'btnBook': 'Book Now',
+                'faqTitle': 'Important Information', 'q1': 'Check-in & Check-out', 'a1': 'Check-in at any time after 14:00. Check-out is until 12:00 PM.',
+                'q2': 'Payment Terms', 'a2': 'Booking requires a 20% prepayment. The rest is paid on arrival.',
+                'footerTitle1': '"OCHOK" RECREATION AREA', 'footerText1': 'Issyk-Kul region, Kadzhi-Say',
+                'footerTitle2': 'CONTACTS', 'footerCopy': '&copy; 2026 "Ochok". All rights reserved.',
+                'alertCabin': 'Please select a cabin.', 'alertDates': 'Please select valid dates.', 'alertInputs': 'Enter name and phone.',
+                'alertSuccess': 'Your request has been sent successfully! The cabin is reserved for you. Please contact us on WhatsApp if you have questions.',
+                'alertTaken': 'Sorry, this cabin is already booked for the selected dates.',
+                'optBreakfast': 'Breakfast included (remove: -$10)',
+                'optLate': 'Late check-out +2h (+$10)',
+                'btnClosedDefault': 'Booking is temporarily unavailable',
+                'mapModalTitle': 'Choose a map', 'mapModalCancel': 'Cancel',
+                'alertTurnstile': 'Please complete the bot check (Cloudflare).'
+            },
+            'kg': {
+                'topLocation': '📍 Кажы-Сай, Ысык-Көл', 'topCalcBtn': 'Брондоо', 'logoSub': 'КӨЛ ЖЭЭГИНДЕГИ А-ФРЕЙМ ҮЙЛӨРҮ',
+                'navAbout': 'Биз жөнүндө', 'navRoom': 'Жашоо', 'navCalc': 'Брондоо', 'navContact': 'Байланыш',
+                'heroTitle': 'Көл жээгиндеги жайлуу<br>А-фрейм үйлөрү', 'heroSubtitle': 'Кажы-Сайдагы тынч эс алуу.',
+                'aboutTitle': '"Очокко" кош келиңиздер', 'aboutText': 'Биздин эс алуу жайыбызда 8 заманбап A-Frame үйлөрү бар.',
+                'roomSectionTitle': 'Сиздин жатаканаңыз', 'roomTitle': 'Жайлуу А-Фрейм',
+                'featCap': '👤 4-6 адам', 'featBeach': '🌊 Так жээкте', 'featEco': '🌲 Эко-материалдар',
+                'roomDesc': 'Панорамалык терезелери бар кенен эки кабаттуу үй.', 'priceLabel': 'Үйдүн баасы:',
+                'nearbyStrong': 'Жакын жерде:', 'nearbyText': 'Кафелер жайгашкан.',
+                'calcTitle': 'Брондоо жана эсептөө', 'calcSub': 'Жалпы сумманы билүү үчүн күндөрдү тандаңыз.',
+                'cabinWord': 'Үй', 'lakePath': '🌊 КӨЛ ⬆', 'noCabinSelected': 'Үй тандалган жок',
+                'formName': 'Атыңыз:', 'formPhone': 'Телефон номериңиз:', 'formIn': 'Келүү:', 'formOut': 'Кетүү:',
+                'calcCurr': 'Валюта:', 'optSom': 'Сом (KGS)', 'optUsd': 'Доллар (USD)',
+                'calcTotalText': 'Жалпы', 'calcNightsText': 'түн үчүн:', 'btnBook': 'Брондоо',
+                'faqTitle': 'Маанилүү маалымат', 'q1': 'Келүү жана кетүү убактысы', 'a1': 'Келүү саат 14:00ден кийин каалаган убакта мүмкүн. Кетүү 12:00гө чейин.',
+                'q2': 'Төлөм шарттары', 'a2': '20% алдын ала төлөм талап кылынат. Калганы келгенде төлөнөт.',
+                'footerTitle1': '«ОЧОК» ЭС АЛУУ ЖАЙЫ', 'footerText1': 'Ысык-Көл облусу, Кажы-Сай а.',
+                'footerTitle2': 'БАЙЛАНЫШ', 'footerCopy': '&copy; 2026 «Очок». Бардык укуктар корголгон.',
+                'alertCabin': 'Картадан үйдү тандаңыз.', 'alertDates': 'Күндөрдү туура тандаңыз.', 'alertInputs': 'Атыңызды жана телефонуңузду киргизиңиз.',
+                'alertSuccess': 'Сиздин табыштамаңыз ийгиликтүү жөнөтүлдү! Үй сакталды. Суроолоруңуз болсо WhatsApp аркылуу байланышыңыз.',
+                'alertTaken': 'Кечиресиз, бул үй тандалган күндөргө ээленген.',
+                'optBreakfast': 'Эртең мененки тамак кошулган (-850 сом)',
+                'optLate': 'Кетүү убактысын узартуу +2 саат (+850 сом)',
+                'btnClosedDefault': 'Брондоо убактылуу жеткиликтүү эмес',
+                'mapModalTitle': 'Картаны тандаңыз', 'mapModalCancel': 'Жокко чыгаруу',
+                'alertTurnstile': 'Сураныч, бот эмес экениңизди ырастаңыз (Cloudflare).'
+            }
+        };
+
+        let currentLang = 'ru';
+        let allBookingsList = []; 
+        let prices = { som: 13100, usd: 150 };
+        let siteSettings = { breakfast: true, booking: true, reason: "" };
+
+        // ЛОГИКА ДЛЯ ОКНА ВЫБОРА КАРТЫ
+        function openMapModal(e) {
+            if(e) e.preventDefault();
+            document.getElementById('map-modal').style.display = 'flex';
+        }
+        function closeMapModal() {
+            document.getElementById('map-modal').style.display = 'none';
+        }
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('map-modal');
+            if (event.target === modal) {
+                closeMapModal();
+            }
+        });
+
+        // ЛОГИКА ДЛЯ CLOUDFLARE TURNSTILE
+        let turnstilePassed = false;
+        let turnstileTokenValue = "";
+        window.turnstileCallback = function(token) {
+            // Эта функция вызовется, когда пользователь успешно пройдет проверку
+            turnstilePassed = true;
+            turnstileTokenValue = token;
+        };
+        window.turnstileExpired = function() {
+            // Токен истёк — сбрасываем, виджет автообновится (data-refresh-expired="auto")
+            turnstilePassed = false;
+            turnstileTokenValue = "";
+        };
+        window.turnstileError = function(errorCode) {
+            // Ошибка верификации — сбрасываем
+            turnstilePassed = false;
+            console.warn('Turnstile error:', errorCode);
+        };
+
+        function changeLanguage(lang, event) {
+            if (event) event.preventDefault(); 
+            currentLang = lang;
+            
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (translations[lang] && translations[lang][key]) {
+                    element.innerHTML = translations[lang][key];
+                }
+            });
+
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            if (event) {
+                event.target.classList.add('active');
+            } else {
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    if (btn.innerText.includes(lang.toUpperCase()) || (lang === 'kg' && btn.innerText.includes('КЫР'))) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            calculateTotal();
+            if(selectedCabin !== null) updateCabinText();
+            applyBookingState();
+        }
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        function moveSlide(direction) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        let selectedCabin = null;
+        function selectCabin(id) {
+            const el = document.getElementById(`cabin-${id}`);
+            if(el.classList.contains('disabled')) {
+                return; 
+            }
+            selectedCabin = id;
+            document.querySelectorAll('.cabin-item:not(.disabled)').forEach(item => item.classList.remove('active'));
+            el.classList.add('active');
+            updateCabinText();
+        }
+
+        function updateCabinText() {
+            const textElement = document.getElementById('selected-cabin-text');
+            if(selectedCabin) {
+                const word = translations[currentLang]['cabinWord'];
+                textElement.innerText = `${word} №${selectedCabin}`;
+            } else {
+                textElement.innerText = translations[currentLang]['noCabinSelected'];
+            }
+        }
+
+        function toggleAccordion(btn) {
+            const item = btn.parentElement;
+            const isActive = item.classList.contains('active');
+            const content = item.querySelector('.accordion-content');
+            
+            document.querySelectorAll('.accordion-item').forEach(i => {
+                i.classList.remove('active');
+                i.querySelector('.accordion-content').style.maxHeight = null;
+            });
+            
+            if (!isActive) {
+                item.classList.add('active');
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        }
+
+        const checkInInput = document.getElementById('checkIn');
+        const checkOutInput = document.getElementById('checkOut');
+        const currencySelect = document.getElementById('currency');
+        const breakfastCheck = document.getElementById('extra-breakfast');
+        const lateCheck = document.getElementById('extra-late-checkout');
+        const nightsCountSpan = document.getElementById('nights-count');
+        const totalPriceSpan = document.getElementById('total-price');
+        const currencySymbolSpan = document.getElementById('currency-symbol');
+        const bookBtn = document.getElementById('bookBtn');
+        const guestName = document.getElementById('guestName');
+        const guestPhone = document.getElementById('guestPhone');
+
+        const today = new Date().toISOString().split('T')[0];
+        checkInInput.min = today;
+
+        let currentTotal = 0;
+        let currentNights = 0;
+
+        function calculateTotal() {
+            const checkInDate = new Date(checkInInput.value);
+            const checkOutDate = new Date(checkOutInput.value);
+            
+            if (checkInInput.value && checkOutInput.value && checkOutDate > checkInDate) {
+                currentNights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+                checkAvailability(); 
+            } else {
+                currentNights = 0;
+            }
+            
+            nightsCountSpan.textContent = currentNights;
+            const curr = currencySelect.value;
+            
+            let basePrice = currentNights * prices[curr];
+
+            if (currentNights > 0) {
+                if (!breakfastCheck.checked) {
+                    basePrice -= (curr === 'som' ? 850 : 10) * currentNights;
+                }
+                if (lateCheck.checked) {
+                    basePrice += (curr === 'som' ? 850 : 10);
+                }
+            }
+
+            currentTotal = basePrice;
+
+            totalPriceSpan.textContent = currentTotal.toLocaleString('ru-RU');
+            currencySymbolSpan.textContent = (curr === 'som') ? 'сом' : '$';
+        }
+
+        function checkAvailability() {
+            if(!checkInInput.value || !checkOutInput.value) return;
+
+            const selectedIn = new Date(checkInInput.value);
+            const selectedOut = new Date(checkOutInput.value);
+
+            document.querySelectorAll('.cabin-item:not(#cabin-8)').forEach(el => {
+                el.classList.remove('disabled');
+                el.title = "";
+            });
+
+            allBookingsList.forEach(booking => {
+                const bIn = new Date(booking.checkIn);
+                const bOut = new Date(booking.checkOut);
+
+                if (selectedIn < bOut && selectedOut > bIn) {
+                    const cabinEl = document.getElementById(`cabin-${Number(booking.cabinNumber)}`);
+                    
+                    if(cabinEl) {
+                        cabinEl.classList.add('disabled');
+                        cabinEl.title = translations[currentLang]['alertTaken'];
+
+                        if(selectedCabin == booking.cabinNumber) {
+                            selectedCabin = null;
+                            cabinEl.classList.remove('active');
+                            updateCabinText();
+                        }
+                    }
+                }
+            });
+        }
+
+      function applyBookingState() {
+            const btn = document.getElementById('bookBtn');
+            if (!siteSettings.booking) {
+                btn.disabled = true;
+                btn.style.background = "#e74c3c"; 
+                if (siteSettings.reason && siteSettings.reason.trim() !== "") {
+                    btn.innerText = siteSettings.reason;
+                } else {
+                    btn.innerText = translations[currentLang]['btnClosedDefault'];
+                }
+            } else {
+                btn.disabled = false;
+                btn.innerText = translations[currentLang]['btnBook'];
+                btn.style.background = ""; 
+            }
+        }
+
+        window.loadSettingsHandler = async function() {
+            if (window.fetchPricesFromFirebase) {
+                try {
+                    const dynamicPrices = await window.fetchPricesFromFirebase();
+                    if(dynamicPrices) {
+                        prices = dynamicPrices;
+                        siteSettings.breakfast = dynamicPrices.breakfast !== false;
+                        siteSettings.booking = dynamicPrices.booking !== false;
+                        siteSettings.reason = dynamicPrices.reason || "";
+
+                        const displayEl = document.getElementById('display-price');
+                        if (displayEl) {
+                            displayEl.innerText = `${prices.usd} $ / ${prices.som.toLocaleString('ru-RU')} сом`;
+                        }
+
+                        if (!siteSettings.breakfast) {
+                            document.getElementById('breakfast-container').style.display = 'none';
+                            document.getElementById('extra-breakfast').checked = true; 
+                        } else {
+                            document.getElementById('breakfast-container').style.display = 'flex';
+                        }
+                    }
+                } catch(e) { console.error("Ошибка цен:", e); }
+            }
+
+            if (window.fetchBookingsFromFirebase) {
+                try {
+                    allBookingsList = await window.fetchBookingsFromFirebase();
+                    checkAvailability(); 
+                } catch (e) { console.error("Ошибка загрузки броней:", e); }
+            }
+            
+            calculateTotal(); 
+            applyBookingState(); 
+        };
+
+        checkInInput.addEventListener('change', () => { 
+            if (!checkInInput.value) return; 
+            
+            let nextDay = new Date(checkInInput.value);
+            nextDay.setDate(nextDay.getDate() + 1);
+            let nextDayString = nextDay.toISOString().split('T')[0];
+
+            checkOutInput.min = nextDayString; 
+            
+            if (!checkOutInput.value || checkOutInput.value <= checkInInput.value) {
+                checkOutInput.value = nextDayString;
+            }
+            
+            calculateTotal(); 
+        });
+        checkOutInput.addEventListener('change', calculateTotal);
+        currencySelect.addEventListener('change', calculateTotal);
+        breakfastCheck.addEventListener('change', calculateTotal);
+        lateCheck.addEventListener('change', calculateTotal);
+
+
+        bookBtn.addEventListener('click', async function() {
+            // ПРОВЕРКА TURNSTILE ПЕРЕД ОТПРАВКОЙ
+            if(!turnstilePassed) { alert(translations[currentLang]['alertTurnstile']); return; }
+
+            if(selectedCabin === null) { alert(translations[currentLang]['alertCabin']); return; }
+            if(currentNights === 0) { alert(translations[currentLang]['alertDates']); return; }
+            if(!guestName.value.trim() || !guestPhone.value.trim()) { alert(translations[currentLang]['alertInputs']); return; }
+
+            // Валидация: имя (макс 100 символов)
+            const cleanName = guestName.value.trim().substring(0, 100);
+            // Валидация: телефон (только цифры, пробелы, +, -, скобки)
+            const cleanPhone = guestPhone.value.trim().substring(0, 30);
+            const phoneRegex = /^[\d\s\+\-\(\)]{7,30}$/;
+            if (!phoneRegex.test(cleanPhone)) {
+                alert(currentLang === 'ru' ? 'Введите корректный номер телефона.' : 
+                      currentLang === 'en' ? 'Please enter a valid phone number.' : 
+                      'Туура телефон номерин киргизиңиз.');
+                return;
+            }
+            // Валидация: домик в диапазоне 1-7
+            if (selectedCabin < 1 || selectedCabin > 7) { return; }
+
+            bookBtn.disabled = true; 
+            bookBtn.innerText = "Отправка...";
+
+            const currVal = currencySelect.value;
+            const safeCurrency = currVal === 'usd' ? 'USD' : 'SOM';
+            const formData = {
+                name: cleanName,
+                phone: cleanPhone,
+                cabinNumber: parseInt(selectedCabin),
+                checkIn: checkInInput.value,
+                checkOut: checkOutInput.value,
+                nights: parseInt(currentNights),
+                breakfast: breakfastCheck.checked,
+                lateCheckout: lateCheck.checked,
+                currency: safeCurrency,
+                total: Math.max(0, parseInt(currentTotal)),
+                status: "booked", 
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                if (window.saveBookingToFirebase) {
+                    await window.saveBookingToFirebase(formData, turnstileTokenValue);
+                    
+                    alert(translations[currentLang]['alertSuccess']);
+
+                    guestName.value = "";
+                    guestPhone.value = "";
+                    selectedCabin = null;
+                    breakfastCheck.checked = true; 
+                    lateCheck.checked = false;
+                    document.querySelectorAll('.cabin-item:not(#cabin-8)').forEach(el => el.classList.remove('active'));
+                    updateCabinText();
+                    
+                    // Сбрасываем галочку Turnstile после успешной заявки
+                    turnstile.reset();
+                    turnstilePassed = false;
+
+                    window.loadSettingsHandler();
+                } else {
+                    alert("Ошибка базы данных. Пожалуйста, обновите страницу.");
+                }
+            } catch (error) {
+                console.error("Ошибка при бронировании:", error);
+                const msg = error.message || "Неизвестная ошибка";
+                alert("Ошибка: " + msg + "\n\nЕсли проблема повторяется, напишите нам в WhatsApp.");
+            } finally {
+                bookBtn.disabled = false; 
+                bookBtn.innerText = translations[currentLang]['btnBook']; 
+            }
+        });
+
+        window.addEventListener('firebaseLoaded', () => {
+            window.loadSettingsHandler();
+        });
+
+    </script>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+      import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+      const firebaseConfig = {
+            apiKey: "AIzaSyCXTsbutO6ja1Glc3F_0BDfbSpsbfqHqqo",
+            authDomain: "ochok-resort.firebaseapp.com",
+            projectId: "ochok-resort",
+            storageBucket: "ochok-resort.firebasestorage.app",
+            messagingSenderId: "822521790563",
+            appId: "1:822521790563:web:f2fa3605214684312f7856"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      const FUNCTION_URL = "https://us-central1-ochok-resort.cloudfunctions.net/createBooking";
+
+      window.saveBookingToFirebase = async function(bookingData, turnstileToken) {
+          const response = await fetch(FUNCTION_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                  data: {
+                      booking: bookingData,
+                      turnstileToken: turnstileToken
+                  }
+              })
+          });
+          if (!response.ok) {
+              const errData = await response.json().catch(() => ({}));
+              throw new Error(errData.error || "Ошибка сервера");
+          }
+          return await response.json();
+      };
+
+      window.fetchBookingsFromFirebase = async function() {
+          // Загружаем только актуальные бронирования (checkOut >= сегодня)
+          const today = new Date().toISOString().split('T')[0];
+          const q = query(
+              collection(db, "public_availability"),
+              where("checkOut", ">=", today)
+          );
+          const querySnapshot = await getDocs(q);
+          let bookings = [];
+          querySnapshot.forEach((doc) => {
+              bookings.push(doc.data());
+          });
+          return bookings;
+      };
+
+      window.fetchPricesFromFirebase = async function() {
+          const docSnap = await getDoc(doc(db, "settings", "prices"));
+          if (docSnap.exists()) { return docSnap.data(); }
+          return null;
+      };
+
+      window.dispatchEvent(new Event('firebaseLoaded'));
+    </script>
+</body>
+</html>
